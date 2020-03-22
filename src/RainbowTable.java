@@ -91,21 +91,82 @@ public class RainbowTable {
             }
             table.put(pass, end);
             count++;
-            System.out.print("\r" + count + "/" + TABLESIZE);
+            System.out.print("\rGenerating Table: " + count + "/" + TABLESIZE);
         }
+        System.out.println();
     }
 
     public void printTable() {
+        System.out.println("\n");
         for(Map.Entry<String, String> s : table.entrySet()){
             System.out.print(s.getKey() + " | " + s.getValue() + "\n");
         }
     }
 
+    /**
+     * Generates Rainbow Table
+     * @return Rainbow Table
+     */
     public HashMap<String, String> generateTable(){
         generatePasswords();
         generateChainEnds();
         return table;
     }
+
+    /**
+     * Searches for Password in Table according to Slide 3.26
+     * @param hash to find password for
+     * @return found password or null if absent
+     */
+    public String findPassword(String hash){
+        String end = null;
+
+        //Searching chain end
+        mainLoop: //Label to break out of nested loop
+        for(int i = CHAINLENGTH-1; i>=0; i--){
+            System.out.print("\rSeaching from Round " + i);
+            String tmp = hash;
+            for(int j = i; j<CHAINLENGTH; j++){
+                tmp = reduce(tmp, j);
+//                System.out.println(tmp);
+                if(table.containsValue(tmp)){
+                    end = tmp;
+                    break mainLoop;
+                }
+                tmp = hash(tmp);
+            }
+        }
+        System.out.println();
+        if(end == null) return null; //if no matching chain end has been found
+
+        //Find start of found chain end in hashmap
+        String start = null;
+        for(Map.Entry<String, String> entry : table.entrySet()){
+            if(entry.getValue().equals(end)) {
+                start = entry.getKey();
+                break;
+            }
+        }
+
+        //Recalculate Chain to find password
+        String tmp = start;
+        String passBefore = start;
+        String password = null;
+        for(int i = 0; i<CHAINLENGTH; i++){
+            assert tmp != null;
+            tmp = hash(tmp);
+            if(tmp.equals(hash)){
+                password = passBefore;
+                break;
+            }
+            tmp = reduce(tmp, i);
+            passBefore = tmp;
+        }
+
+        return password;
+    }
+
+
 
 
 }
