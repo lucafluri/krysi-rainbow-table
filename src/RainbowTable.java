@@ -114,11 +114,12 @@ public class RainbowTable {
     }
 
     /**
-     * Searches for Password in Table according to Slide 3.26
+     * Searches for password in table according to Slide 3.26
      * @param hash to find password for
-     * @return found password or null if absent
+     * @return found password or null if absent or not found
      */
     public String findPassword(String hash){
+        System.out.println("Searching Password for hash: " + hash);
         String end = null;
 
         //Searching chain end
@@ -163,6 +164,7 @@ public class RainbowTable {
             passBefore = tmp;
         }
 
+        System.out.println(password != null ? "Password found: " + password : "No Password found!");
         return password;
     }
 

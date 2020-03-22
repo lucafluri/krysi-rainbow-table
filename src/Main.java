@@ -8,6 +8,6 @@ public class Main {
         rt.generateTable();
         //rt.printTable();
 
-        System.out.println(rt.findPassword(toFind));
+        rt.findPassword(toFind);
     }
 }
