@@ -120,13 +120,13 @@ public class RainbowTable {
      * @return found password or null if absent or not found
      */
     public String findPassword(String hash){
-        System.out.println("Searching Password for hash: " + hash);
+        System.out.println("Searching password for hash: " + hash);
         String end = null;
 
         //Searching chain end
         mainLoop: //Label to break out of nested loop
         for(int i = CHAINLENGTH-1; i>=0; i--){
-            System.out.print("\rSeaching from Round " + i);
+            System.out.print("\rSeaching from round " + i);
             String tmp = hash;
             for(int j = i; j<CHAINLENGTH; j++){
                 tmp = reduce(tmp, j);
