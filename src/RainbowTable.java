@@ -65,23 +65,21 @@ public class RainbowTable {
     }
 
     private void generatePasswords(String curr){
-        //Check if table size is reached
-        if(table.size() != TABLESIZE) {
-            //Check if current password has reached its size limit, if so add it to table
-            if(curr.length() == PASSLENGTH) {
-                table.put(curr, null);
-            }else{
-                StringBuilder newCurr = new StringBuilder(curr);
-                for(char c : chars){
-                    String old = newCurr.toString();
-                    newCurr.append(c);
-                    generatePasswords(newCurr.toString());
-                    //reset curr to change added character
-                    newCurr = new StringBuilder(old);
-                }
+        //Check if current password has reached its size limit, if so add it to table
+        if(curr.length() == PASSLENGTH) {
+            table.put(curr, null);
+        }else{
+            StringBuilder newCurr = new StringBuilder(curr);
+            for(char c : chars){
+                String old = newCurr.toString();
+                //appends new char
+                newCurr.append(c);
+                //Check if table size is reached
+                if(table.size() != TABLESIZE) generatePasswords(newCurr.toString());
+                //reset curr to change added character
+                newCurr = new StringBuilder(old);
             }
         }
-
     }
 
     /**
@@ -95,8 +93,7 @@ public class RainbowTable {
                 end = reduce(hash(end), i);
             }
             table.put(pass, end);
-            count++;
-            System.out.print("\rGenerating Table: " + count + "/" + TABLESIZE);
+            System.out.print("\rGenerating Table: " + ++count + "/" + TABLESIZE);
         }
         System.out.println();
     }
@@ -138,7 +135,7 @@ public class RainbowTable {
 //                System.out.println(tmp);
                 if(table.containsValue(tmp)){
                     end = tmp;
-                    break mainLoop;
+                    break mainLoop; //Break out of all loops
                 }
                 tmp = hash(tmp);
             }
@@ -156,18 +153,17 @@ public class RainbowTable {
         }
 
         //Recalculate Chain to find password
-        String tmp = start;
         String passBefore = start;
-        String password = null;
+        String password = null; //Variable for found password
         for(int i = 0; i<CHAINLENGTH; i++){
-            assert tmp != null;
-            tmp = hash(tmp);
-            if(tmp.equals(hash)){
+            assert start != null;
+            start = hash(start);
+            if(start.equals(hash)){
                 password = passBefore;
                 break;
             }
-            tmp = reduce(tmp, i);
-            passBefore = tmp;
+            start = reduce(start, i);
+            passBefore = start;
         }
 
         System.out.println(password != null ? "Password found: " + password : "No Password found!");
