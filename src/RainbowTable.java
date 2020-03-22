@@ -18,6 +18,7 @@ public class RainbowTable {
 
     public final HashMap<String, String> table = new HashMap<>();
 
+
     /**
      * Hashes String with MD5
      * @param s String to hash in MD5
@@ -65,23 +66,27 @@ public class RainbowTable {
 
     private void generatePasswords(String curr){
         //Check if table size is reached
-        if(table.size() == TABLESIZE) return;
-        //Check if current password has reached its size limit, if so add it to table
-        else if(curr.length() == PASSLENGTH) {
-            table.put(curr, null);
-        }else{
-            StringBuilder newCurr = new StringBuilder(curr);
-            for(char c : chars){
-                String old = newCurr.toString();
-                newCurr.append(c);
-                generatePasswords(newCurr.toString());
-                //reset curr to change added character
-                newCurr = new StringBuilder(old);
+        if(table.size() != TABLESIZE) {
+            //Check if current password has reached its size limit, if so add it to table
+            if(curr.length() == PASSLENGTH) {
+                table.put(curr, null);
+            }else{
+                StringBuilder newCurr = new StringBuilder(curr);
+                for(char c : chars){
+                    String old = newCurr.toString();
+                    newCurr.append(c);
+                    generatePasswords(newCurr.toString());
+                    //reset curr to change added character
+                    newCurr = new StringBuilder(old);
+                }
             }
-            curr = newCurr.toString();
         }
+
     }
 
+    /**
+     * Generates all Chain ends for the table
+     */
     private void generateChainEnds(){
         int count = 0;
         for(String pass : table.keySet()){
@@ -96,6 +101,9 @@ public class RainbowTable {
         System.out.println();
     }
 
+    /**
+     * Prints Table to Console
+     */
     public void printTable() {
         System.out.println("\n");
         for(Map.Entry<String, String> s : table.entrySet()){
@@ -105,12 +113,10 @@ public class RainbowTable {
 
     /**
      * Generates Rainbow Table
-     * @return Rainbow Table
      */
-    public HashMap<String, String> generateTable(){
+    public void generateTable(){
         generatePasswords();
         generateChainEnds();
-        return table;
     }
 
     /**
